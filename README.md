@@ -89,12 +89,3 @@ Os testes realizados no projeto incluem os seguintes cenários:
 
 Foi adotado o **Page Object Model (POM)** para melhorar a organização, legibilidade e manutenção dos testes. Com esse padrão, cada página do site (como a página inicial, página de resultados de busca, página de produto e página de carrinho) é representada por um arquivo JavaScript dentro da pasta `pages/`. As interações com a página são abstraídas nessas classes, o que facilita a reutilização e manutenção do código.
 
-## Contribuições
-
-Se desejar contribuir para este projeto, fique à vontade! Você pode abrir uma **issue** ou fazer um **pull request**. Para contribuir, siga os passos abaixo:
-
-1. **Fork** este repositório.
-2. Crie uma branch com sua modificação: `git checkout -b minha-modificacao`.
-3. Faça as alterações e faça o commit: `git commit -am 'Minha modificação'`.
-4. Envie para o repositório remoto: `git push origin minha-modificacao`.
-5. Crie um **pull request**.
