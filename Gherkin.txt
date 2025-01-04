@@ -1,0 +1,22 @@
+Funcionalidade: Funcionalidade do Carrinho de Compras  
+
+  Cenário: Buscar um produto  
+    Dado que estou na página inicial da Advantage Online Shopping  
+    Quando clico no botão de busca  
+    E digito "Bose Soundlink Bluetooth Speaker III"  
+    E pressiono Enter  
+    Então devo ver o produto nos resultados da busca  
+
+  Cenário: Adicionar produto ao carrinho  
+    Dado que busquei por "Bose Soundlink Bluetooth Speaker III"  
+    Quando clico no botão "Comprar Agora" para o produto  
+    E seleciono a quantidade como "1"  
+    E clico no botão "Adicionar ao Carrinho"  
+    Então o produto deve ser adicionado ao meu carrinho de compras  
+
+  Cenário: Validar produtos no carrinho na tela de pagamento  
+    Dado que adicionei "Bose Soundlink Bluetooth Speaker III" ao meu carrinho  
+    Quando navego até o carrinho de compras  
+    E clico no botão "Finalizar Compra"  
+    Então devo ver "Bose Soundlink Bluetooth Speaker III" no resumo do pedido  
+    E o valor total deve ser "$269,99"

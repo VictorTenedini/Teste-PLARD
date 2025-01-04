@@ -1,0 +1,22 @@
+{
+  "name": "teste-plard",
+  "version": "1.0.0",
+  "description": "teste para analista de qualidade",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VictorTenedini/Teste-PLARD.git"
+  },
+  "author": "Victor Tenedini",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VictorTenedini/Teste-PLARD/issues"
+  },
+  "homepage": "https://github.com/VictorTenedini/Teste-PLARD#readme",
+  "devDependencies": {
+    "cypress": "^13.17.0"
+  }
+}

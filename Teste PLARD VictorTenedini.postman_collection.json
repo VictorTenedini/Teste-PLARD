@@ -1,0 +1,353 @@
+{
+	"info": {
+		"_postman_id": "8561ae15-0263-4fd6-9018-2f19d7efac32",
+		"name": "Teste PLARD VictorTenedini",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13470725",
+		"_collection_link": "https://planetary-capsule-788669.postman.co/workspace/Victor-Hugo-Tenedini~1b81c349-9fb0-45db-bf93-6248f2065827/collection/13470725-8561ae15-0263-4fd6-9018-2f19d7efac32?action=share&source=collection_link&creator=13470725"
+	},
+	"item": [
+		{
+			"name": "GET Produtos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// 1. Validação do Status Code\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// 2. Validação da Estrutura do JSON\r",
+							"pm.test(\"Response has correct JSON structure\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.keys(\"products\", \"colors\", \"minPrice\", \"maxPrice\");\r",
+							"});\r",
+							"\r",
+							"// 3. Validação de Produtos Retornados\r",
+							"pm.test(\"Each product has required fields\", function () {\r",
+							"    const products = pm.response.json().products;\r",
+							"    products.forEach(product => {\r",
+							"        pm.expect(product).to.have.keys(\"productId\", \"categoryId\", \"productName\", \"price\", \"description\", \"imageUrl\", \"attributes\", \"colors\", \"images\", \"productStatus\");\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"// 4. Validação de Preço Mínimo e Máximo\r",
+							"pm.test(\"Prices are within minPrice and maxPrice\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    const minPrice = parseFloat(jsonData.minPrice);\r",
+							"    const maxPrice = parseFloat(jsonData.maxPrice);\r",
+							"    jsonData.products.forEach(product => {\r",
+							"        pm.expect(product.price).to.be.at.least(minPrice);\r",
+							"        pm.expect(product.price).to.be.at.most(maxPrice);\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"// 5. Validação de Estoque\r",
+							"pm.test(\"Products have valid stock information\", function () {\r",
+							"    const products = pm.response.json().products;\r",
+							"    products.forEach(product => {\r",
+							"        product.colors.forEach(color => {\r",
+							"            pm.expect(color).to.have.property(\"inStock\");\r",
+							"            pm.expect(color.inStock).to.be.a(\"number\").and.to.be.at.least(0);\r",
+							"        });\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"// 6. Validação de Produtos com Status \"OutOfStock\"\r",
+							"pm.test(\"OutOfStock products have inStock = 0\", function () {\r",
+							"    const products = pm.response.json().products;\r",
+							"    products.forEach(product => {\r",
+							"        if (product.productStatus === \"OutOfStock\") {\r",
+							"            product.colors.forEach(color => {\r",
+							"                pm.expect(color.inStock).to.equal(0);\r",
+							"            });\r",
+							"        }\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"// 7. Validação das Cores Disponíveis\r",
+							"pm.test(\"Colors listed in products match the global colors list\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    const globalColors = jsonData.colors;\r",
+							"    jsonData.products.forEach(product => {\r",
+							"        product.colors.forEach(color => {\r",
+							"            pm.expect(globalColors).to.include(color.code);\r",
+							"        });\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"// 8. Validação de Atributos do Produto\r",
+							"pm.test(\"Products have valid attributes\", function () {\r",
+							"    const products = pm.response.json().products;\r",
+							"    products.forEach(product => {\r",
+							"        product.attributes.forEach(attribute => {\r",
+							"            pm.expect(attribute).to.have.keys(\"attributeName\", \"attributeValue\");\r",
+							"        });\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://www.advantageonlineshopping.com/catalog/api/v1/products/",
+					"protocol": "https",
+					"host": [
+						"www",
+						"advantageonlineshopping",
+						"com"
+					],
+					"path": [
+						"catalog",
+						"api",
+						"v1",
+						"products",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Prod by ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// 1. Validação do Status Code\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// 2. Validação de que o produto retornado é o esperado\r",
+							"pm.test(\"Returned product matches the requested ID\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.productId).to.equal(13);\r",
+							"});\r",
+							"\r",
+							"// 3. Validação de Estrutura do Produto\r",
+							"pm.test(\"Product has the required fields\", function () {\r",
+							"    const product = pm.response.json();\r",
+							"    pm.expect(product).to.have.keys(\"productId\", \"categoryId\", \"productName\", \"price\", \"description\", \"imageUrl\", \"attributes\", \"colors\", \"images\", \"productStatus\");\r",
+							"});\r",
+							"\r",
+							"// 4. Validação de Estoque das Cores\r",
+							"pm.test(\"Each color has valid stock information\", function () {\r",
+							"    const colors = pm.response.json().colors;\r",
+							"    colors.forEach(color => {\r",
+							"        pm.expect(color).to.have.property(\"inStock\");\r",
+							"        pm.expect(color.inStock).to.be.a(\"number\").and.to.be.at.least(0);\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"// 5. Validação de Produto com Status \"OutOfStock\"\r",
+							"pm.test(\"OutOfStock product has inStock = 0 for all colors\", function () {\r",
+							"    const product = pm.response.json();\r",
+							"    if (product.productStatus === \"OutOfStock\") {\r",
+							"        product.colors.forEach(color => {\r",
+							"            pm.expect(color.inStock).to.equal(0);\r",
+							"        });\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"// 6. Validação de Atributos do Produto\r",
+							"pm.test(\"Product has valid attributes\", function () {\r",
+							"    const attributes = pm.response.json().attributes;\r",
+							"    attributes.forEach(attribute => {\r",
+							"        pm.expect(attribute).to.have.keys(\"attributeName\", \"attributeValue\");\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"// 7. Validação das Imagens do Produto\r",
+							"pm.test(\"Product has valid images\", function () {\r",
+							"    const images = pm.response.json().images;\r",
+							"    pm.expect(images).to.be.an(\"array\").that.is.not.empty;\r",
+							"    images.forEach(image => {\r",
+							"        pm.expect(image).to.be.a(\"string\");\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://www.advantageonlineshopping.com/catalog/api/v1/products/13",
+					"protocol": "https",
+					"host": [
+						"www",
+						"advantageonlineshopping",
+						"com"
+					],
+					"path": [
+						"catalog",
+						"api",
+						"v1",
+						"products",
+						"13"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Product",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Recuperar o valor atual do preço da variável de ambiente\r",
+							"let currentPrice = pm.collectionVariables.get(\"pricex\");\r",
+							"\r",
+							"// Se o preço não estiver definido, inicializar com um valor padrão, ex: 1849.99\r",
+							"if (!currentPrice) {\r",
+							"    currentPrice = 1849.99;\r",
+							"} else {\r",
+							"    // Incrementar o preço em um valor fixo, por exemplo, 10\r",
+							"    currentPrice = parseFloat(currentPrice) + 10;\r",
+							"}\r",
+							"\r",
+							"// Atualizar a variável de ambiente com o novo preço\r",
+							"\r",
+							"pm.collectionVariables.set(\"pricex\", currentPrice);\r",
+							"\r",
+							"// Exibir o novo preço no console para fins de depuração\r",
+							"console.log(\"Novo preço configurado:\", currentPrice);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// 1. Verificar se o status da resposta é 200\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// 2. Verificar se a resposta contém o campo 'id'\r",
+							"pm.test(\"Response contains id\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.have.property('id');\r",
+							"});\r",
+							"\r",
+							"// 3. Validar que o preço retornado é igual ao enviado\r",
+							"const responseJson = pm.response.json();\r",
+							"const expectedPrice = pm.collectionVariables.get(\"pricex\");\r",
+							"\r",
+							"pm.test(\"Returned price matches the expected price\", function () {\r",
+							"    pm.expect(responseJson.data.price).to.eql(parseFloat(expectedPrice));\r",
+							"});\r",
+							"\r",
+							"// 4. Validar que o nome do produto está correto\r",
+							"const expectedName = \"Apple MacBook Pro 16\"; // Nome esperado do produto\r",
+							"pm.test(\"Product name is correct\", function () {\r",
+							"    pm.expect(responseJson.name).to.eql(expectedName);\r",
+							"});\r",
+							"\r",
+							"// 5. Validar que o campo 'createdAt' existe e é uma data válida\r",
+							"pm.test(\"CreatedAt is present and valid\", function () {\r",
+							"    pm.expect(responseJson).to.have.property('createdAt');\r",
+							"    \r",
+							"    // Verificar se 'createdAt' tem um formato ISO de data\r",
+							"    const createdAt = responseJson.createdAt;\r",
+							"    const isoDateRegex = /^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.\\d{3}\\+\\d{2}:\\d{2}$/;\r",
+							"    pm.expect(createdAt).to.match(isoDateRegex);\r",
+							"});\r",
+							"\r",
+							"// 6. Salvar o 'id' do produto em uma variável de coleção para futuras requisições\r",
+							"pm.collectionVariables.set(\"productId\", responseJson.id);\r",
+							"\r",
+							"// 7. Log no console para depuração\r",
+							"console.log(\"Preço enviado:\", expectedPrice);\r",
+							"console.log(\"Preço retornado:\", responseJson.data.price);\r",
+							"console.log(\"Nome do produto retornado:\", responseJson.name);\r",
+							"console.log(\"createdAt retornado:\", responseJson.createdAt);\r",
+							"console.log(\"ID do produto salvo:\", responseJson.id);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"name\": \"Apple MacBook Pro 16\",\r\n   \"data\": {\r\n      \"year\": 2019,\r\n      \"price\": {{pricex}},\r\n      \"CPU model\": \"Intel Core i9\",\r\n      \"Hard disk size\": \"1 TB12\"\r\n   }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.restful-api.dev/objects",
+					"protocol": "https",
+					"host": [
+						"api",
+						"restful-api",
+						"dev"
+					],
+					"path": [
+						"objects"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "pricex",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "productId",
+			"value": ""
+		}
+	]
+}
