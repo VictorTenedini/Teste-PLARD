@@ -77,6 +77,11 @@ Teste-PLARD/
 - **`pages/`**: Contém os arquivos de implementação do padrão Page Object, que abstraem interações com as páginas do site.
 - **`cypress.json`**: Arquivo de configuração do Cypress.
 
+### Testes Funcionais
+- **`Gherkin.txt`**: Arquivo contendo os cenários descritos em Gherkin no formato .txt, conforme solicitado.
+- **`Teste PLARD VictorTenedini.postman_collection.json`**: Coleção com as requisições e testes de backend realizados no Postman.
+OBS: No teste de requisição POST, foi utilizada outra API, conforme especificado, devido à impossibilidade de fazer o POST desta API funcionar.
+
 ## Estratégia de Testes
 
 Os testes realizados no projeto incluem os seguintes cenários:
