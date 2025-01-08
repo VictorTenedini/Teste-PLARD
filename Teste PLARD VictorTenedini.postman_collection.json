@@ -8,7 +8,7 @@
 	},
 	"item": [
 		{
-			"name": "GET Produtos",
+			"name": "Catalog Product",
 			"event": [
 				{
 					"listen": "test",
@@ -55,19 +55,9 @@
 							"    });\r",
 							"});\r",
 							"\r",
-							"// 6. Validação de Produtos com Status \"OutOfStock\"\r",
-							"pm.test(\"OutOfStock products have inStock = 0\", function () {\r",
-							"    const products = pm.response.json().products;\r",
-							"    products.forEach(product => {\r",
-							"        if (product.productStatus === \"OutOfStock\") {\r",
-							"            product.colors.forEach(color => {\r",
-							"                pm.expect(color.inStock).to.equal(0);\r",
-							"            });\r",
-							"        }\r",
-							"    });\r",
-							"});\r",
 							"\r",
-							"// 7. Validação das Cores Disponíveis\r",
+							"\r",
+							"// 6. Validação das Cores Disponíveis\r",
 							"pm.test(\"Colors listed in products match the global colors list\", function () {\r",
 							"    const jsonData = pm.response.json();\r",
 							"    const globalColors = jsonData.colors;\r",
@@ -78,7 +68,7 @@
 							"    });\r",
 							"});\r",
 							"\r",
-							"// 8. Validação de Atributos do Produto\r",
+							"// 7. Validação de Atributos do Produto\r",
 							"pm.test(\"Products have valid attributes\", function () {\r",
 							"    const products = pm.response.json().products;\r",
 							"    products.forEach(product => {\r",
@@ -117,7 +107,7 @@
 			"response": []
 		},
 		{
-			"name": "GET Prod by ID",
+			"name": "Catalog Prod by ID",
 			"event": [
 				{
 					"listen": "test",
@@ -128,19 +118,15 @@
 							"    pm.response.to.have.status(200);\r",
 							"});\r",
 							"\r",
-							"// 2. Validação de que o produto retornado é o esperado\r",
-							"pm.test(\"Returned product matches the requested ID\", function () {\r",
-							"    const jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.productId).to.equal(13);\r",
-							"});\r",
 							"\r",
-							"// 3. Validação de Estrutura do Produto\r",
+							"\r",
+							"// 2. Validação de Estrutura do Produto\r",
 							"pm.test(\"Product has the required fields\", function () {\r",
 							"    const product = pm.response.json();\r",
 							"    pm.expect(product).to.have.keys(\"productId\", \"categoryId\", \"productName\", \"price\", \"description\", \"imageUrl\", \"attributes\", \"colors\", \"images\", \"productStatus\");\r",
 							"});\r",
 							"\r",
-							"// 4. Validação de Estoque das Cores\r",
+							"// 3. Validação de Estoque das Cores\r",
 							"pm.test(\"Each color has valid stock information\", function () {\r",
 							"    const colors = pm.response.json().colors;\r",
 							"    colors.forEach(color => {\r",
@@ -149,17 +135,9 @@
 							"    });\r",
 							"});\r",
 							"\r",
-							"// 5. Validação de Produto com Status \"OutOfStock\"\r",
-							"pm.test(\"OutOfStock product has inStock = 0 for all colors\", function () {\r",
-							"    const product = pm.response.json();\r",
-							"    if (product.productStatus === \"OutOfStock\") {\r",
-							"        product.colors.forEach(color => {\r",
-							"            pm.expect(color.inStock).to.equal(0);\r",
-							"        });\r",
-							"    }\r",
-							"});\r",
 							"\r",
-							"// 6. Validação de Atributos do Produto\r",
+							"\r",
+							"// 4. Validação de Atributos do Produto\r",
 							"pm.test(\"Product has valid attributes\", function () {\r",
 							"    const attributes = pm.response.json().attributes;\r",
 							"    attributes.forEach(attribute => {\r",
@@ -167,7 +145,7 @@
 							"    });\r",
 							"});\r",
 							"\r",
-							"// 7. Validação das Imagens do Produto\r",
+							"// 5. Validação das Imagens do Produto\r",
 							"pm.test(\"Product has valid images\", function () {\r",
 							"    const images = pm.response.json().images;\r",
 							"    pm.expect(images).to.be.an(\"array\").that.is.not.empty;\r",
@@ -205,29 +183,29 @@
 			"response": []
 		},
 		{
-			"name": "POST Product",
+			"name": "Accounts Register",
 			"event": [
 				{
 					"listen": "prerequest",
 					"script": {
 						"exec": [
-							"// Recuperar o valor atual do preço da variável de ambiente\r",
-							"let currentPrice = pm.collectionVariables.get(\"pricex\");\r",
+							"// Gerar um loginName aleatório (exemplo: admin_user12345)\r",
+							"const randomSuffix = Math.floor(Math.random() * 100000); // Gera um número aleatório até 100000\r",
+							"const loginName = `admin_user${randomSuffix}`;\r",
 							"\r",
-							"// Se o preço não estiver definido, inicializar com um valor padrão, ex: 1849.99\r",
-							"if (!currentPrice) {\r",
-							"    currentPrice = 1849.99;\r",
-							"} else {\r",
-							"    // Incrementar o preço em um valor fixo, por exemplo, 10\r",
-							"    currentPrice = parseFloat(currentPrice) + 10;\r",
-							"}\r",
+							"// Salvar o loginName na variável de coleção\r",
+							"pm.collectionVariables.set(\"loginName\", loginName);\r",
 							"\r",
-							"// Atualizar a variável de ambiente com o novo preço\r",
+							"// Exibir o loginName no console para verificação\r",
+							"console.log(\"Login Name gerado:\", loginName);\r",
 							"\r",
-							"pm.collectionVariables.set(\"pricex\", currentPrice);\r",
+							"// Atualizar o body da requisição com o novo loginName\r",
+							"let requestBody = JSON.parse(pm.request.body.raw); // Parse o body atual\r",
+							"requestBody.loginName = loginName; // Atualiza o campo loginName\r",
+							"pm.request.body.raw = JSON.stringify(requestBody); // Atualiza o body na requisição\r",
 							"\r",
-							"// Exibir o novo preço no console para fins de depuração\r",
-							"console.log(\"Novo preço configurado:\", currentPrice);\r",
+							"// Exibir o body atualizado no console para verificação\r",
+							"console.log(\"Body atualizado:\", pm.request.body.raw);\r",
 							""
 						],
 						"type": "text/javascript",
@@ -238,50 +216,27 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"// 1. Verificar se o status da resposta é 200\r",
+							"// 1. Validar que o status da resposta é 200\r",
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
 							"});\r",
 							"\r",
-							"// 2. Verificar se a resposta contém o campo 'id'\r",
-							"pm.test(\"Response contains id\", function () {\r",
-							"    const responseJson = pm.response.json();\r",
-							"    pm.expect(responseJson).to.have.property('id');\r",
-							"});\r",
-							"\r",
-							"// 3. Validar que o preço retornado é igual ao enviado\r",
+							"// 2. Validar que a criação do usuário foi bem-sucedida\r",
 							"const responseJson = pm.response.json();\r",
-							"const expectedPrice = pm.collectionVariables.get(\"pricex\");\r",
-							"\r",
-							"pm.test(\"Returned price matches the expected price\", function () {\r",
-							"    pm.expect(responseJson.data.price).to.eql(parseFloat(expectedPrice));\r",
+							"pm.test(\"User creation success\", function () {\r",
+							"    pm.expect(responseJson.response.success).to.be.true;\r",
+							"    pm.expect(responseJson.response.reason).to.eql(\"New user created successfully.\");\r",
 							"});\r",
 							"\r",
-							"// 4. Validar que o nome do produto está correto\r",
-							"const expectedName = \"Apple MacBook Pro 16\"; // Nome esperado do produto\r",
-							"pm.test(\"Product name is correct\", function () {\r",
-							"    pm.expect(responseJson.name).to.eql(expectedName);\r",
-							"});\r",
+							"// 3. Salvar o userId retornado na variável de coleção\r",
+							"if (responseJson.response && responseJson.response.userId) {\r",
+							"    pm.collectionVariables.set(\"userId\", responseJson.response.userId);\r",
+							"    console.log(\"User ID salvo:\", responseJson.response.userId);\r",
+							"}\r",
 							"\r",
-							"// 5. Validar que o campo 'createdAt' existe e é uma data válida\r",
-							"pm.test(\"CreatedAt is present and valid\", function () {\r",
-							"    pm.expect(responseJson).to.have.property('createdAt');\r",
-							"    \r",
-							"    // Verificar se 'createdAt' tem um formato ISO de data\r",
-							"    const createdAt = responseJson.createdAt;\r",
-							"    const isoDateRegex = /^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.\\d{3}\\+\\d{2}:\\d{2}$/;\r",
-							"    pm.expect(createdAt).to.match(isoDateRegex);\r",
-							"});\r",
 							"\r",
-							"// 6. Salvar o 'id' do produto em uma variável de coleção para futuras requisições\r",
-							"pm.collectionVariables.set(\"productId\", responseJson.id);\r",
 							"\r",
-							"// 7. Log no console para depuração\r",
-							"console.log(\"Preço enviado:\", expectedPrice);\r",
-							"console.log(\"Preço retornado:\", responseJson.data.price);\r",
-							"console.log(\"Nome do produto retornado:\", responseJson.name);\r",
-							"console.log(\"createdAt retornado:\", responseJson.createdAt);\r",
-							"console.log(\"ID do produto salvo:\", responseJson.id);\r",
+							"\r",
 							""
 						],
 						"type": "text/javascript",
@@ -294,7 +249,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n   \"name\": \"Apple MacBook Pro 16\",\r\n   \"data\": {\r\n      \"year\": 2019,\r\n      \"price\": {{pricex}},\r\n      \"CPU model\": \"Intel Core i9\",\r\n      \"Hard disk size\": \"1 TB12\"\r\n   }\r\n}",
+					"raw": "{\r\n  \"accountType\": \"ADMIN\",\r\n  \"address\": \"123 Admin Street\",\r\n  \"allowOffersPromotion\": true,\r\n  \"aobUser\": true,\r\n  \"cityName\": \"Admin City\",\r\n  \"country\": \"AUSTRALIA_AU\",\r\n  \"email\": \"admin@example.com\",\r\n  \"firstName\": \"Admin\",\r\n  \"lastName\": \"User\",\r\n  \"loginName\": \"{{loginName}}\",\r\n  \"password\": \"Admin123!\",\r\n  \"phoneNumber\": \"+61 123 456 789\",\r\n  \"stateProvince\": \"NSW\",\r\n  \"zipcode\": \"2000\"\r\n}\r\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -302,15 +257,369 @@
 					}
 				},
 				"url": {
-					"raw": "https://api.restful-api.dev/objects",
+					"raw": "https://www.advantageonlineshopping.com/accountservice/accountrest/api/v1/register",
 					"protocol": "https",
 					"host": [
-						"api",
-						"restful-api",
-						"dev"
+						"www",
+						"advantageonlineshopping",
+						"com"
 					],
 					"path": [
-						"objects"
+						"accountservice",
+						"accountrest",
+						"api",
+						"v1",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Accounts Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// 1. Verificar se o status da resposta é 200\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// 2. Verificar se a resposta contém o campo 'token' e 'userId'\r",
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Response contains token and userId\", function () {\r",
+							"    pm.expect(responseJson.statusMessage).to.have.property('token');\r",
+							"    pm.expect(responseJson.statusMessage).to.have.property('userId');\r",
+							"});\r",
+							"\r",
+							"// 3. Validar se o userId retornado corresponde ao userId salvo na variável de coleção\r",
+							"const savedUserId = pm.collectionVariables.get(\"userId\");\r",
+							"pm.test(\"User ID matches the saved ID\", function () {\r",
+							"    pm.expect(responseJson.statusMessage.userId).to.eql(savedUserId);\r",
+							"});\r",
+							"\r",
+							"// 4. Salvar o token retornado na variável de coleção para uso posterior\r",
+							"pm.collectionVariables.set(\"userToken\", responseJson.statusMessage.token);\r",
+							"console.log(\"User token saved:\", responseJson.statusMessage.token);\r",
+							"\r",
+							"// 5. Validar se a resposta contém a mensagem de sucesso esperada\r",
+							"pm.test(\"Login Successful message\", function () {\r",
+							"    pm.expect(responseJson.statusMessage.reason).to.eql(\"Login Successful\");\r",
+							"});\r",
+							"\r",
+							"// 6. Exibir no console para depuração\r",
+							"console.log(\"Login response:\", responseJson);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"admin@example.com\",\r\n  \"loginPassword\": \"Admin123!\",\r\n  \"loginUser\": \"{{loginName}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://www.advantageonlineshopping.com/accountservice/accountrest/api/v1/login",
+					"protocol": "https",
+					"host": [
+						"www",
+						"advantageonlineshopping",
+						"com"
+					],
+					"path": [
+						"accountservice",
+						"accountrest",
+						"api",
+						"v1",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// 1. Verificar se o status da resposta é 200\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// 2. Verificar se o campo 'success' é true\r",
+							"const responseJson = pm.response.json();\r",
+							"pm.test(\"Success is true\", function () {\r",
+							"    pm.expect(responseJson.success).to.eql(true);\r",
+							"});\r",
+							"\r",
+							"// 3. Verificar se a resposta contém o campo 'id' e validar seu tipo\r",
+							"pm.test(\"Response contains 'id' and it is a number\", function () {\r",
+							"    pm.expect(responseJson).to.have.property('id');\r",
+							"    pm.expect(responseJson.id).to.be.a('number');\r",
+							"});\r",
+							"\r",
+							"// 4. Verificar se a resposta contém o campo 'reason' e validar seu valor\r",
+							"pm.test(\"Reason message is 'Product was created successful'\", function () {\r",
+							"    pm.expect(responseJson.reason).to.eql(\"Product was created successful\");\r",
+							"});\r",
+							"\r",
+							"// 5. Salvar o 'id' retornado na variável de coleção 'newProductId'\r",
+							"pm.collectionVariables.set(\"newProductId\", responseJson.id);\r",
+							"console.log(\"New Product ID saved:\", responseJson.id);\r",
+							"\r",
+							"// 6. Exibir a resposta no console para depuração\r",
+							"console.log(\"Resposta da API:\", responseJson);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"attributes\": [\r\n    {\r\n      \"attributeName\": \"Weight\",\r\n      \"attributeValue\": \"2.5kg\"\r\n    },\r\n    {\r\n      \"attributeName\": \"Dimensions\",\r\n      \"attributeValue\": \"35 x 25 x 3 cm\"\r\n    }\r\n  ],\r\n  \"categoryId\": 2,\r\n  \"colors\": [\r\n    {\r\n      \"code\": \"#FF5733\",\r\n      \"inStock\": 50,\r\n      \"name\": \"Red\"\r\n    },\r\n    {\r\n      \"code\": \"#33FF57\",\r\n      \"inStock\": 30,\r\n      \"name\": \"Green\"\r\n    }\r\n  ],\r\n  \"description\": \"This is a high-quality, durable laptop suitable for both work and leisure. It features advanced specs and a sleek design.\",\r\n  \"imageUrl\": \"https://picsum.photos/id/1/200/300\",\r\n  \"images\": [\r\n    \r\n  ],\r\n  \"price\": 1249.99,\r\n  \"productId\": 2001,\r\n  \"productName\": \"Premium Laptop 16\\\"\",\r\n  \"productStatus\": \"OutOfStock\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://www.advantageonlineshopping.com/catalog/api/v1/products",
+					"protocol": "https",
+					"host": [
+						"www",
+						"advantageonlineshopping",
+						"com"
+					],
+					"path": [
+						"catalog",
+						"api",
+						"v1",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload Product Image",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// 1. Verificar se o status da resposta é 200\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// 2. Verificar se o campo 'success' é true\r",
+							"const responseJson = pm.response.json();\r",
+							"pm.test(\"Success is true\", function () {\r",
+							"    pm.expect(responseJson.success).to.eql(true);\r",
+							"});\r",
+							"\r",
+							"// 3. Verificar se a resposta contém o campo 'id' e validar seu tipo\r",
+							"pm.test(\"Response contains 'id' and it is a number\", function () {\r",
+							"    pm.expect(responseJson).to.have.property('id');\r",
+							"    pm.expect(responseJson.id).to.be.a('number');\r",
+							"});\r",
+							"\r",
+							"// 4. Verificar se a resposta contém o campo 'reason' e validar seu valor\r",
+							"pm.test(\"Reason message is 'Product was updated successful'\", function () {\r",
+							"    pm.expect(responseJson.reason).to.eql(\"Product was updated successful\");\r",
+							"});\r",
+							"\r",
+							"// 5. Verificar se a resposta contém o campo 'imageId' e validá-lo\r",
+							"pm.test(\"Response contains 'imageId' and it is a string\", function () {\r",
+							"    pm.expect(responseJson).to.have.property('imageId');\r",
+							"    pm.expect(responseJson.imageId).to.be.a('string');\r",
+							"});\r",
+							"\r",
+							"// 6. Verificar se a resposta contém o campo 'imageColor' e validá-lo\r",
+							"pm.test(\"Response contains 'imageColor' and it is a string\", function () {\r",
+							"    pm.expect(responseJson).to.have.property('imageColor');\r",
+							"    pm.expect(responseJson.imageColor).to.be.a('string');\r",
+							"});\r",
+							"\r",
+							"// 7. Salvar o 'imageId' e 'imageColor' na variável de coleção\r",
+							"pm.collectionVariables.set(\"updatedImageId\", responseJson.imageId);\r",
+							"pm.collectionVariables.set(\"updatedImageColor\", responseJson.imageColor);\r",
+							"console.log(\"Updated Image ID saved:\", responseJson.imageId);\r",
+							"console.log(\"Updated Image Color saved:\", responseJson.imageColor);\r",
+							"\r",
+							"// 8. Exibir a resposta no console para depuração\r",
+							"console.log(\"Resposta da API:\", responseJson);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "file",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "postman-cloud:///1efcd3c0-4b22-43d0-a83e-4c0fbc84f641"
+						},
+						{
+							"key": "product_id",
+							"value": "{{newProductId}}",
+							"type": "text"
+						},
+						{
+							"key": "source",
+							"value": "\"https://picsum.photos/id/1/200/300\"",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://www.advantageonlineshopping.com/catalog/api/v1/product/image/{{userId}}/{source}",
+					"protocol": "https",
+					"host": [
+						"www",
+						"advantageonlineshopping",
+						"com"
+					],
+					"path": [
+						"catalog",
+						"api",
+						"v1",
+						"product",
+						"image",
+						"{{userId}}",
+						"{source}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Product Updt Img",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// 1. Verificar se o status da resposta é 200\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// 2. Verificar se o campo 'productId' está presente e é um número\r",
+							"const responseJson = pm.response.json();\r",
+							"pm.test(\"Response contains 'productId' and it is a number\", function () {\r",
+							"    pm.expect(responseJson).to.have.property('productId');\r",
+							"    pm.expect(responseJson.productId).to.be.a('number');\r",
+							"});\r",
+							"\r",
+							"// 3. Validar se o 'productId' retornado corresponde ao 'newProductId' salvo na coleção\r",
+							"pm.test(\"productId matches newProductId\", function () {\r",
+							"    const savedProductId = pm.collectionVariables.get(\"newProductId\");\r",
+							"    pm.expect(responseJson.productId).to.eql(savedProductId);\r",
+							"});\r",
+							"\r",
+							"// 4. Verificar se o campo 'images' contém o identificador da imagem\r",
+							"pm.test(\"images field contains imageId and imageColor\", function () {\r",
+							"    const imageId = pm.collectionVariables.get(\"updatedImageId\");\r",
+							"    const imageColor = pm.collectionVariables.get(\"updatedImageColor\");\r",
+							"    const images = responseJson.images;\r",
+							"\r",
+							"    // Verificar se o imageId e imageColor estão presentes no campo 'images'\r",
+							"    pm.expect(images[0]).to.include(imageId);\r",
+							"    pm.expect(images[0]).to.include(imageColor);\r",
+							"});\r",
+							"\r",
+							"// 5. Exibir a resposta no console para depuração\r",
+							"console.log(\"Resposta da API:\", responseJson);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://www.advantageonlineshopping.com/catalog/api/v1/products/{{newProductId}}",
+					"protocol": "https",
+					"host": [
+						"www",
+						"advantageonlineshopping",
+						"com"
+					],
+					"path": [
+						"catalog",
+						"api",
+						"v1",
+						"products",
+						"{{newProductId}}"
 					]
 				}
 			},
@@ -346,7 +655,32 @@
 			"type": "string"
 		},
 		{
-			"key": "productId",
+			"key": "loginName",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "newProductId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "updatedImageId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "updatedImageColor",
 			"value": ""
 		}
 	]
