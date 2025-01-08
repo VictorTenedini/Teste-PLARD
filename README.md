@@ -5,9 +5,10 @@ Este projeto contém testes automatizados utilizando o Cypress para validar func
 
 ## Tecnologias Utilizadas
 
-- **Cypress**: Framework de testes end-to-end para testar interações em um navegador.
-- **JavaScript**: Linguagem utilizada para escrever os testes.
-- **Page Object Model**: Padrão de projeto para organizar os testes e facilitar a manutenção do código.
+- **Cypress**: Framework de testes end-to-end para testar interações em um navegador.  
+- **Cucumber**: Integração com Cypress para escrever cenários de teste em formato Gherkin.  
+- **JavaScript**: Linguagem utilizada para escrever os testes.  
+- **Page Object Model**: Padrão de projeto para organizar os testes e facilitar a manutenção do código.  
 
 ## Requisitos
 
@@ -57,30 +58,34 @@ Os testes serão executados automaticamente e você verá o resultado no termina
 
 A estrutura do projeto é organizada da seguinte forma:
 
-```
-Teste-PLARD/
-├── cypress/
-│   ├── e2e/
-│   │   └── shoppProduct.cy.js    # Arquivo de teste (spec) principal
-│   ├── fixtures/                 # Arquivos de dados para os testes
-│   ├── pages/                    # Implementação do padrão de Page Object
-│   └── support/                  # Comandos e configurações de suporte do Cypress
-├── .gitignore                    # Arquivos e pastas ignoradas pelo Git
-├── cypress.json                  # Configuração do Cypress
-├── package.json                  # Dependências do projeto e scripts
-└── README.md                     # Este arquivo de documentação
-```
+Teste-PLARD/  
+├── cypress/  
+│   ├── e2e/  
+│   │   └── shopping.feature             # Arquivo de cenários em Gherkin  
+│   ├── pages/                           # Implementação do padrão Page Object  
+│   │   ├── HomePage.js                  # Página inicial  
+│   │   ├── ProductPage.js               # Página de produto  
+│   │   ├── SearchPage.js                # Página de busca  
+│   │   ├── ShoppingCartPage.js          # Página do carrinho  
+│   ├── support/  
+│   │   ├── step_definitions/  
+│   │   │   └── shoppingSteps.js         # Implementação dos steps do Cucumber  
+│   │   ├── commands.js                  # Comandos customizados do Cypress  
+│   │   ├── e2e.js                       # Configurações globais para os testes  
+├── cypress.config.js                    # Configuração do Cypress  
+├── package.json                         # Dependências do projeto  
+├── README.md                            # Este arquivo de documentação  
 
 ### Descrição dos principais arquivos:
 
-- **`shoppProduct.cy.js`**: Arquivo de teste principal, onde são realizados os testes de busca, adição ao carrinho e validação do carrinho de compras no site Advantage Online Shopping.
+- **`shopping.feature`**: Arquivo de feature contendo os cenários descritos em Gherkin para busca, adição ao carrinho e validação de produtos no carrinho. 
+- **`shoppingSteps.js`**: Implementação dos steps definidos em `shopping.feature` usando os Page Objects do projeto.   
 - **`pages/`**: Contém os arquivos de implementação do padrão Page Object, que abstraem interações com as páginas do site.
-- **`cypress.json`**: Arquivo de configuração do Cypress.
+
 
 ### Testes Funcionais
 - **`Gherkin.txt`**: Arquivo contendo os cenários descritos em Gherkin no formato .txt, conforme solicitado.
 - **`Teste PLARD VictorTenedini.postman_collection.json`**: Coleção com as requisições e testes de backend realizados no Postman.
-OBS: No teste de requisição POST, foi utilizada outra API, conforme especificado, devido à impossibilidade de fazer o POST desta API funcionar.
 
 ## Estratégia de Testes
 
